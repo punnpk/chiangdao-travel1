@@ -78,7 +78,7 @@ function updateDistances(uLat, uLng) {
     renderPage();
 }
 
-// 3. ฟังก์ชันแสดงผลหน้าเว็บ (ซ่อนปุ่มถ้ามีรูปเดียว)
+// 3. ฟังก์ชันแสดงผลหน้าเว็บ (ปรับปรุงเรื่อง Logo)
 function renderPage() {
     const container = document.getElementById('placeContainer');
     const start = (currentPage - 1) * itemsPerPage;
@@ -105,7 +105,7 @@ function renderPage() {
                 <div class="card-image">
                     <div class="image-track" style="transform: translateX(0%);" data-index="0">
                         ${imagesContent}
-                        <img src="IMG/LOGO/logo.png" class="placeholder-img" style="display:none;">
+                        <img src="IMG/LOGO/logo.png" class="placeholder-img" onerror="this.src='IMG/LOGO/logo.jpg'; this.onerror=null;">
                     </div>
                     <div class="slider-controls" id="controls-${item.code}">
                         <button class="nav-btn prev-btn" onclick="moveSlide('${item.code}', -1)">❮</button>
@@ -197,3 +197,4 @@ function searchFunction() {
 
 
 init();
+
