@@ -18,7 +18,7 @@ body, html {
 .toptab img { height: 60px; margin-right: 15px; }
 .logo { font-size: 24px; color: #0556ec; margin: 0; font-weight: bold; }
 
-/* --- Landing Page Menu --- */
+/* --- Landing Page Menu (หน้าแรก) --- */
 .main-menu-wrapper {
     display: flex;
     flex-direction: column;
@@ -28,8 +28,19 @@ body, html {
     text-align: center;
 }
 
-h1.welcome-text { margin-bottom: 10px; color: #0556ec; font-size: 36px; font-weight: 700; }
-h2.welcome-text { margin-bottom: 45px; color: #64748b; font-size: 20px; font-weight: 400; }
+h1.welcome-text {
+    margin-bottom: 10px;
+    color: #0556ec;
+    font-size: 36px;
+    font-weight: 700;
+}
+
+h2.welcome-text {
+    margin-bottom: 45px;
+    color: #64748b;
+    font-size: 20px;
+    font-weight: 400;
+}
 
 .full-screen-menu {
     display: grid;
@@ -87,7 +98,8 @@ h2.welcome-text { margin-bottom: 45px; color: #64748b; font-size: 20px; font-wei
 
 .search-box {
     display: flex;
-    background: #ffffff;
+    align-items: center;
+    background-color: #ffffff;
     border: 2px solid #e2e8f0;
     border-radius: 15px;
     padding: 2px 5px 2px 15px;
@@ -96,13 +108,37 @@ h2.welcome-text { margin-bottom: 45px; color: #64748b; font-size: 20px; font-wei
     transition: 0.3s;
 }
 
-.search-box:focus-within { border-color: #0556ec; box-shadow: 0 0 0 3px rgba(5, 86, 236, 0.1); }
-.search-box input { flex: 1; border: none; outline: none; font-size: 14px; padding: 10px 0; font-family: 'Mitr', sans-serif; }
-.search-box button { background: #0556ec; color: white; border: none; padding: 8px 15px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+.search-box:focus-within {
+    border-color: #0556ec;
+    box-shadow: 0 0 0 3px rgba(5, 86, 236, 0.1);
+}
 
-.home-btn { text-decoration: none; color: #0f172a; background: #f1f5f9; padding: 8px 18px; border-radius: 10px; font-weight: bold; }
+.search-box input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    padding: 10px 0;
+    font-family: 'Mitr', sans-serif;
+    background: transparent;
+}
 
-/* --- Place Grid --- */
+.search-box button {
+    background: #0556ec;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.home-btn {
+    text-decoration: none; color: #0f172a; background: #f1f5f9;
+    padding: 8px 18px; border-radius: 10px; font-weight: bold;
+}
+
+/* --- Place Grid (2 Columns on Mobile) --- */
 .place-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -111,10 +147,13 @@ h2.welcome-text { margin-bottom: 45px; color: #64748b; font-size: 20px; font-wei
 }
 
 @media (min-width: 992px) {
-    .place-grid { grid-template-columns: repeat(4, 1fr); gap: 25px; }
+    .place-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 25px;
+    }
 }
 
-/* --- Place Card --- */
+/* --- Place Card Styles --- */
 .place-card {
     background: white;
     border-radius: 18px;
@@ -123,13 +162,13 @@ h2.welcome-text { margin-bottom: 45px; color: #64748b; font-size: 20px; font-wei
     display: flex;
     flex-direction: column;
     transition: 0.3s;
-    height: 100%; /* ให้การ์ดสูงเท่ากันในแถว */
+    height: 100%; /* เพิ่มให้ความสูงเท่ากัน */
 }
 
 .card-image {
     position: relative;
     width: 100%;
-    aspect-ratio: 4/3; /* บังคับสัดส่วนรูป */
+    aspect-ratio: 4/3;
     overflow: hidden;
     background: #e2e8f0;
 }
@@ -146,24 +185,25 @@ h2.welcome-text { margin-bottom: 45px; color: #64748b; font-size: 20px; font-wei
     object-fit: cover;
 }
 
-/* --- แก้บั๊กรูปโลโก้บังหน้าจอ --- */
+/* --- ส่วนแก้บั๊กโลโก้ที่พัง (ต้องมีส่วนนี้) --- */
 .placeholder-img {
-    display: none; /* ซ่อนไว้ก่อน */
+    display: none; 
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 60% !important; /* จำกัดขนาดโลโก้ */
+    width: 60% !important; 
     height: auto !important;
     object-fit: contain !important;
     z-index: 1;
+    opacity: 0.3;
 }
 
 .show-placeholder {
     display: block !important;
 }
 
-/* --- ปุ่มเลื่อนรูป --- */
+/* --- Navigation Buttons --- */
 .nav-btn {
     position: absolute;
     top: 50%;
@@ -180,7 +220,10 @@ h2.welcome-text { margin-bottom: 45px; color: #64748b; font-size: 20px; font-wei
     justify-content: center;
     font-size: 14px;
     z-index: 10;
+    transition: 0.2s;
 }
+
+.nav-btn:hover { background: rgba(0, 0, 0, 0.7); }
 .prev-btn { left: 8px; }
 .next-btn { right: 8px; }
 
@@ -210,13 +253,6 @@ h2.welcome-text { margin-bottom: 45px; color: #64748b; font-size: 20px; font-wei
     color: #28a745;
     margin-bottom: 10px;
     font-weight: bold;
-}
-
-/* เพิ่มส่วนแสดงเบอร์โทรที่ถามถึง */
-.contact-tag {
-    font-size: 12px;
-    color: #475569;
-    margin-bottom: 10px;
 }
 
 .map-btn {
@@ -259,12 +295,23 @@ h2.welcome-text { margin-bottom: 45px; color: #64748b; font-size: 20px; font-wei
     cursor: pointer;
 }
 
-.page-btn.active { background: #0556ec; color: white; border-color: #0556ec; }
+.page-btn.active {
+    background: #0556ec;
+    color: white;
+    border-color: #0556ec;
+}
 
-/* --- Mobile Specific --- */
+/* --- Mobile Specific Overrides --- */
 @media (max-width: 768px) {
     .sticky-nav { flex-direction: column; gap: 10px; }
-    .search-box { width: 100%; }
-    .place-grid { gap: 10px; padding: 10px 3%; }
-    .place-card h3 { font-size: 14px; }
+    .search-box { width: 100%; max-width: none; }
+    .home-btn { width: 100%; text-align: center; }
+    h1.welcome-text { font-size: 24px; }
+    h2.welcome-text { font-size: 16px; }
+    .menu-item { height: 140px; }
+    .menu-item span { font-size: 22px; }
+    
+    .place-card h3 { font-size: 13px; }
+    .map-btn { font-size: 11px; padding: 8px; }
+    .nav-btn { width: 26px; height: 26px; font-size: 12px; }
 }
