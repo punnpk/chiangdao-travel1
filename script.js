@@ -105,7 +105,7 @@ function renderPage() {
                 <div class="card-image">
                     <div class="image-track" style="transform: translateX(0%);" data-index="0">
                         ${imagesContent}
-                        <img src="IMG/Logo/logo.png" class="placeholder-img" style="display:none;">
+                        <img src="IMG/LOGO/logo.png" class="placeholder-img" style="display:none;">
                     </div>
                     <div class="slider-controls" id="controls-${item.code}">
                         <button class="nav-btn prev-btn" onclick="moveSlide('${item.code}', -1)">❮</button>
@@ -194,5 +194,6 @@ function searchFunction() {
     currentPage = 1; 
     renderPage();
 }
+
 
 init();
