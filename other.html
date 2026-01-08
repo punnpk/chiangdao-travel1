@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>อื่นๆ อบต.เชียงดาว</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="sticky-nav">
+        <a href="index.html" class="home-btn">← กลับหน้าแรก</a>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="ค้นหาชื่อที่พัก..." onkeyup="searchFunction()">
+            <button onclick="searchFunction()">ค้นหา</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 id="pageTitle" class="welcome-text" style="margin-top:40px; text-align: center;" data-type="other">
+            อื่นๆ
+        </h1>
+        <p style="text-align:center; font-size: 12px; color: #64748b; margin-bottom: 20px;">
+            *แสดงระยะทางประมาณแบบเส้นตรงจากตำแหน่งที่ตั้งของอบต.เชียงดาว
+        </p>
+
+        <div id="paginationTop" class="pagination-container"></div>
+
+        <div id="placeContainer" class="place-grid">
+            <div style="grid-column: 1/-1; text-align: center; padding: 50px;">
+                <p>กำลังโหลดข้อมูลที่พักและคำนวณระยะทาง...</p>
+            </div>
+        </div>
+
+        <div id="paginationBottom" class="pagination-container"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
