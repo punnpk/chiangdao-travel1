@@ -3,7 +3,7 @@ const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQytne2tRE77Ji
 let allData = []; 
 let filteredData = []; 
 let currentPage = 1;
-const itemsPerPage = 10;
+const itemsPerPage = 12; // ปรับให้หาร 2 และ 4 ลงตัว
 
 // 1. ฟังก์ชันคำนวณระยะทาง
 function getDisplacement(lat1, lon1, lat2, lon2) {
@@ -17,7 +17,7 @@ function getDisplacement(lat1, lon1, lat2, lon2) {
     return R * c;
 }
 
-// 2. ฟังก์ชันดึงข้อมูลและเตรียมระบบ
+// 2. ฟังก์ชันดึงข้อมูล
 async function init() {
     const container = document.getElementById('placeContainer');
     const titleElement = document.getElementById('pageTitle');
@@ -51,8 +51,7 @@ async function init() {
             navigator.geolocation.getCurrentPosition(
                 (pos) => updateDistances(pos.coords.latitude, pos.coords.longitude),
                 (error) => {
-                    console.warn("GPS Access Denied: Using provided mock location");
-                    // เปลี่ยนเป็นพิกัดที่คุณต้องการเรียบร้อยแล้ว
+                    console.warn("GPS Denied: Using Chiang Dao Center");
                     updateDistances(19.3528235, 98.9624811); 
                 },
                 { enableHighAccuracy: false, timeout: 5000 }
@@ -78,7 +77,7 @@ function updateDistances(uLat, uLng) {
     renderPage();
 }
 
-// 3. ฟังก์ชันแสดงผลหน้าเว็บ (ปรับปรุงเรื่อง Logo)
+// 3. ฟังก์ชันแสดงผลหน้าเว็บ
 function renderPage() {
     const container = document.getElementById('placeContainer');
     const start = (currentPage - 1) * itemsPerPage;
@@ -105,7 +104,7 @@ function renderPage() {
                 <div class="card-image">
                     <div class="image-track" style="transform: translateX(0%);" data-index="0">
                         ${imagesContent}
-                        <img src="IMG/LOGO/logo.png" class="placeholder-img" onerror="this.src='IMG/LOGO/logo.jpg'; this.onerror=null;">
+                        <img src="IMG/LOGO/logo.png" class="placeholder-img" onerror="this.src='IMG/LOGO/logo.jpg';">
                     </div>
                     <div class="slider-controls" id="controls-${item.code}">
                         <button class="nav-btn prev-btn" onclick="moveSlide('${item.code}', -1)">❮</button>
@@ -127,23 +126,24 @@ function renderPage() {
     renderPagination();
 }
 
-// 4. ฟังก์ชันเช็คจำนวนรูปเพื่อซ่อนปุ่ม
+// 4. ฟังก์ชันเช็คจำนวนรูปเพื่อซ่อนปุ่มหรือโชว์ Logo
 function checkControls(code) {
     const card = document.getElementById(`card-${code}`);
     if (!card) return;
 
-    const visibleImgs = card.querySelectorAll('.image-track img:not(.hide):not(.placeholder-img)');
+    const visibleImgs = card.querySelectorAll('.image-track img.slide-img:not(.hide)');
     const controls = card.querySelector('.slider-controls');
+    const placeholder = card.querySelector('.placeholder-img');
     
+    // ถ้ามีรูปน้อยกว่าหรือเท่ากับ 1 ให้ซ่อนปุ่มเลื่อน
     if (visibleImgs.length <= 1) {
         if (controls) controls.style.display = 'none';
     }
 
+    // ถ้าไม่มีรูปสถานที่เลย ให้โชว์ Logo แทน
     if (visibleImgs.length === 0) {
-        const placeholder = card.querySelector('.placeholder-img');
         if (placeholder) {
-            placeholder.style.display = 'block';
-            placeholder.classList.remove('hide');
+            placeholder.classList.add('show-placeholder');
         }
     }
 }
@@ -152,7 +152,7 @@ function checkControls(code) {
 function moveSlide(code, direction) {
     const card = document.getElementById(`card-${code}`);
     const track = card.querySelector('.image-track');
-    const imgs = track.querySelectorAll('img:not(.hide)');
+    const imgs = track.querySelectorAll('img.slide-img:not(.hide)');
     if (imgs.length <= 1) return;
 
     let currentIndex = parseInt(track.dataset.index || 0);
@@ -165,14 +165,16 @@ function moveSlide(code, direction) {
     track.dataset.index = currentIndex;
 }
 
-// 6. ส่วนประกอบอื่นๆ (Pagination, Search)
+// 6. Pagination & Search
 function renderPagination() {
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
     const topContainer = document.getElementById('paginationTop');
     const bottomContainer = document.getElementById('paginationBottom');
+    
     const html = Array.from({ length: totalPages }, (_, i) => `
         <button class="page-btn ${currentPage === i + 1 ? 'active' : ''}" onclick="changePage(${i + 1})">${i + 1}</button>
     `).join('');
+    
     if(topContainer) topContainer.innerHTML = html;
     if(bottomContainer) bottomContainer.innerHTML = html;
 }
@@ -187,6 +189,7 @@ function searchFunction() {
     const input = document.getElementById('searchInput').value.toLowerCase();
     const titleElement = document.getElementById('pageTitle');
     let targetType = titleElement.getAttribute('data-type').trim().toLowerCase().replace('é', 'e');
+    
     filteredData = allData.filter(item => {
         const itemType = item.type ? item.type.toLowerCase().replace('é', 'e') : "";
         return itemType === targetType && item.name.toLowerCase().includes(input);
@@ -195,6 +198,4 @@ function searchFunction() {
     renderPage();
 }
 
-
 init();
-
