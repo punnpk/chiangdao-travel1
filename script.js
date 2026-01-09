@@ -17,10 +17,12 @@ function getDisplacement(lat1, lon1, lat2, lon2) {
     return R * c;
 }
 
-// 2. ฟังก์ชันดึงข้อมูลและเริ่มต้นระบบ
+// 2. ฟังก์ชันดึงข้อมูล
 async function init() {
     const container = document.getElementById('placeContainer');
     const titleElement = document.getElementById('pageTitle');
+    if (!titleElement) return;
+    
     let targetType = titleElement.getAttribute('data-type').trim().toLowerCase().replace('é', 'e');
 
     try {
@@ -28,6 +30,8 @@ async function init() {
         const csvText = await response.text();
         
         const rows = csvText.split(/\r?\n/).filter(row => row.trim() !== "");
+        if (rows.length < 2) return;
+
         const headers = rows[0].split(',').map(h => h.trim().toLowerCase().replace(/["']/g, ""));
         
         allData = rows.slice(1).map(row => {
@@ -61,7 +65,7 @@ async function init() {
         }
     } catch (error) {
         console.error("Error:", error);
-        container.innerHTML = "<p style='text-align:center;'>เกิดข้อผิดพลาดในการโหลดข้อมูล</p>";
+        if (container) container.innerHTML = "<p style='text-align:center;'>เกิดข้อผิดพลาดในการโหลดข้อมูล</p>";
     }
 }
 
@@ -77,9 +81,11 @@ function updateDistances(uLat, uLng) {
     renderPage();
 }
 
-// 3. ฟังก์ชันแสดงผลการ์ดสถานที่
+// 3. ฟังก์ชันแสดงผล
 function renderPage() {
     const container = document.getElementById('placeContainer');
+    if (!container) return;
+
     const start = (currentPage - 1) * itemsPerPage;
     const end = start + itemsPerPage;
     const paginatedItems = filteredData.slice(start, end);
@@ -91,14 +97,14 @@ function renderPage() {
 
     let cardsHtml = "";
     paginatedItems.forEach(item => {
-        // วนลูปเผื่อไว้ 20 รูป เพื่อให้เพิ่มรูปได้ไม่จำกัด (ถ้ารูปไม่มีจริง onerror จะซ่อนเอง)
         let imagesContent = "";
+        // วนลูป 20 รูป
         for (let i = 1; i <= 20; i++) {
             imagesContent += `
                 <img src="IMG/places/${item.code}_${i}.jpg" 
                      loading="lazy" 
                      class="slide-img"
-                     onerror="this.classList.add('hide'); this.style.display='none'; checkControls('${item.code}')">
+                     onerror="this.style.display='none'; this.classList.add('hide'); checkControls('${item.code}')">
             `;
         }
 
@@ -129,30 +135,27 @@ function renderPage() {
     renderPagination();
 }
 
-// 4. ฟังก์ชันเช็คจำนวนรูปที่โหลดสำเร็จ เพื่อซ่อนปุ่มควบคุม
+// 4. เช็คจำนวนรูป
 function checkControls(code) {
     const card = document.getElementById(`card-${code}`);
     if (!card) return;
 
-    // เลือกเฉพาะรูปที่โหลดสำเร็จ (ไม่มีคลาส hide)
     const visibleImgs = card.querySelectorAll('.image-track img.slide-img:not(.hide)');
     const controls = card.querySelector('.slider-controls');
     const placeholder = card.querySelector('.placeholder-img');
     
-    // ถ้ามีรูป 1 รูปหรือไม่มีเลย ให้ซ่อนปุ่มซ้าย-ขวา
-    if (visibleImgs.length <= 1) {
-        if (controls) controls.style.display = 'none';
+    // ซ่อนปุ่มถ้ามีรูปเดียวหรือไม่มีเลย
+    if (controls) {
+        controls.style.display = visibleImgs.length <= 1 ? 'none' : 'flex';
     }
 
-    // ถ้าไม่มีรูปสถานที่เลย (ทุกรูปรัน onerror) ให้แสดงโลโก้ อบต.
-    if (visibleImgs.length === 0) {
-        if (placeholder) {
-            placeholder.classList.add('show-placeholder');
-        }
+    // โชว์โลโก้ถ้าไม่มีรูปเลย
+    if (visibleImgs.length === 0 && placeholder) {
+        placeholder.classList.add('show-placeholder');
     }
 }
 
-// 5. ฟังก์ชันเลื่อนรูปภาพใน Slide
+// 5. เลื่อนรูป
 function moveSlide(code, direction) {
     const card = document.getElementById(`card-${code}`);
     const track = card.querySelector('.image-track');
@@ -169,7 +172,7 @@ function moveSlide(code, direction) {
     track.dataset.index = currentIndex;
 }
 
-// 6. ระบบเปลี่ยนหน้า (Pagination)
+// 6. Pagination
 function renderPagination() {
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
     const topContainer = document.getElementById('paginationTop');
@@ -189,7 +192,7 @@ function changePage(page) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// 7. ระบบค้นหา
+// 7. ค้นหา
 function searchFunction() {
     const input = document.getElementById('searchInput').value.toLowerCase();
     const titleElement = document.getElementById('pageTitle');
@@ -203,7 +206,5 @@ function searchFunction() {
     renderPage();
 }
 
-// เริ่มการทำงาน
-
+// เริ่มงาน
 init();
-
