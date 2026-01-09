@@ -204,4 +204,8 @@ function searchFunction() {
 }
 
 // เริ่มการทำงาน
+<<<<<<< HEAD
 init();
+=======
+init();
+>>>>>>> 218002d0ed77f187444f4c1d9ccdde9a29633093
