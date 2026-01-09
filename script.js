@@ -3,7 +3,7 @@ const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQytne2tRE77Ji
 let allData = []; 
 let filteredData = []; 
 let currentPage = 1;
-const itemsPerPage = 12; // ปรับให้หาร 2 และ 4 ลงตัว
+const itemsPerPage = 12;
 
 // 1. ฟังก์ชันคำนวณระยะทาง
 function getDisplacement(lat1, lon1, lat2, lon2) {
@@ -17,7 +17,7 @@ function getDisplacement(lat1, lon1, lat2, lon2) {
     return R * c;
 }
 
-// 2. ฟังก์ชันดึงข้อมูล
+// 2. ฟังก์ชันดึงข้อมูลและเริ่มต้นระบบ
 async function init() {
     const container = document.getElementById('placeContainer');
     const titleElement = document.getElementById('pageTitle');
@@ -77,7 +77,7 @@ function updateDistances(uLat, uLng) {
     renderPage();
 }
 
-// 3. ฟังก์ชันแสดงผลหน้าเว็บ
+// 3. ฟังก์ชันแสดงผลการ์ดสถานที่
 function renderPage() {
     const container = document.getElementById('placeContainer');
     const start = (currentPage - 1) * itemsPerPage;
@@ -91,13 +91,16 @@ function renderPage() {
 
     let cardsHtml = "";
     paginatedItems.forEach(item => {
-        const images = [1, 2, 3, 4, 5];
-        const imagesContent = images.map((num) => `
-            <img src="IMG/places/${item.code}_${num}.jpg" 
-                 loading="lazy" 
-                 class="slide-img"
-                 onerror="this.classList.add('hide'); this.style.display='none'; checkControls('${item.code}')">
-        `).join('');
+        // วนลูปเผื่อไว้ 20 รูป เพื่อให้เพิ่มรูปได้ไม่จำกัด (ถ้ารูปไม่มีจริง onerror จะซ่อนเอง)
+        let imagesContent = "";
+        for (let i = 1; i <= 20; i++) {
+            imagesContent += `
+                <img src="IMG/places/${item.code}_${i}.jpg" 
+                     loading="lazy" 
+                     class="slide-img"
+                     onerror="this.classList.add('hide'); this.style.display='none'; checkControls('${item.code}')">
+            `;
+        }
 
         cardsHtml += `
             <div class="place-card" id="card-${item.code}">
@@ -126,21 +129,22 @@ function renderPage() {
     renderPagination();
 }
 
-// 4. ฟังก์ชันเช็คจำนวนรูปเพื่อซ่อนปุ่มหรือโชว์ Logo
+// 4. ฟังก์ชันเช็คจำนวนรูปที่โหลดสำเร็จ เพื่อซ่อนปุ่มควบคุม
 function checkControls(code) {
     const card = document.getElementById(`card-${code}`);
     if (!card) return;
 
+    // เลือกเฉพาะรูปที่โหลดสำเร็จ (ไม่มีคลาส hide)
     const visibleImgs = card.querySelectorAll('.image-track img.slide-img:not(.hide)');
     const controls = card.querySelector('.slider-controls');
     const placeholder = card.querySelector('.placeholder-img');
     
-    // ถ้ามีรูปน้อยกว่าหรือเท่ากับ 1 ให้ซ่อนปุ่มเลื่อน
+    // ถ้ามีรูป 1 รูปหรือไม่มีเลย ให้ซ่อนปุ่มซ้าย-ขวา
     if (visibleImgs.length <= 1) {
         if (controls) controls.style.display = 'none';
     }
 
-    // ถ้าไม่มีรูปสถานที่เลย ให้โชว์ Logo แทน
+    // ถ้าไม่มีรูปสถานที่เลย (ทุกรูปรัน onerror) ให้แสดงโลโก้ อบต.
     if (visibleImgs.length === 0) {
         if (placeholder) {
             placeholder.classList.add('show-placeholder');
@@ -148,7 +152,7 @@ function checkControls(code) {
     }
 }
 
-// 5. ฟังก์ชันเลื่อนรูป
+// 5. ฟังก์ชันเลื่อนรูปภาพใน Slide
 function moveSlide(code, direction) {
     const card = document.getElementById(`card-${code}`);
     const track = card.querySelector('.image-track');
@@ -165,7 +169,7 @@ function moveSlide(code, direction) {
     track.dataset.index = currentIndex;
 }
 
-// 6. Pagination & Search
+// 6. ระบบเปลี่ยนหน้า (Pagination)
 function renderPagination() {
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
     const topContainer = document.getElementById('paginationTop');
@@ -185,6 +189,7 @@ function changePage(page) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// 7. ระบบค้นหา
 function searchFunction() {
     const input = document.getElementById('searchInput').value.toLowerCase();
     const titleElement = document.getElementById('pageTitle');
@@ -198,4 +203,5 @@ function searchFunction() {
     renderPage();
 }
 
+// เริ่มการทำงาน
 init();
